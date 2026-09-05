@@ -1541,32 +1541,66 @@ const CONFIG = {
 
 
 /* =========================================================
-   THERESIA IDENTITY
+   THERESIA IDENTITY (Dipadatkan agar URL aman)
 ========================================================= */
+const THERESIA_INSTRUCTION = "Kamu adalah Theresia AI ciptaan Tim KyuuZa. Jawab dengan cerdas, ramah, dan gunakan bahasa user. Jangan pernah mengaku sebagai Gemini.";
 
-const THERESIA_INSTRUCTION = `
-Kamu adalah Theresia AI.
+/* =========================================================
+   FAST GEMINI FUNCTION
+========================================================= */
+async function runFast(prompt){
+    const loading = addLoading();
 
-Theresia AI adalah asisten AI yang diciptakan
-oleh Tim KyuuZa.
+    try{
+        const params = new URLSearchParams();
+        params.set("prompt", prompt);
+        params.set("instruction", THERESIA_INSTRUCTION);
+        params.set("session", sessionId);
+        
+        // Memasukkan kembali API Key sesuai permintaan
+        params.set("api_key", CONFIG.API_KEY);
 
-Identitas:
-- Nama: Theresia AI
-- Creator: Tim KyuuZa
-- Status: Beta
-- Gaya: ramah, cerdas, membantu, natural
-- Bahasa: ikuti bahasa yang digunakan user
+        const urlFetch = CONFIG.FAST_API + "?" + params.toString();
+        
+        console.log("Cek URL Request:", urlFetch); // Bantu debug di console browser
 
-Jika user bertanya siapa kamu, jawab bahwa kamu
-adalah Theresia AI yang diciptakan oleh Tim KyuuZa.
+        const response = await fetch(urlFetch);
 
-Jangan mengaku sebagai Gemini atau AI lain.
-Kamu adalah Theresia AI.
+        if(!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
 
-Bantu user dengan jawaban yang jelas,
-natural, dan mudah dipahami.
-`.trim();
+        const data = await response.json();
+        loading.remove();
 
+        const result = data?.result;
+        if(!result) {
+            throw new Error("Response API tidak memiliki result.");
+        }
+
+        // Simpan Session ID
+        if(result.session_id && typeof result.session_id === "string"){
+            sessionId = result.session_id;
+            localStorage.setItem("theresia_current_session", sessionId);
+            updateSessionUI();
+            migrateTemporarySession();
+            updateHistoryUI(); 
+        }
+
+        // Tampilkan Teks
+        const answer = result.response;
+        if(typeof answer !== "string" || !answer.trim()){
+            throw new Error("Balasan tidak ditemukan dari API.");
+        }
+
+        addAIMessage(answer);
+        saveMessage("assistant", answer);
+
+    }catch(error){
+        loading.remove();
+        addAIMessage("Maaf, terjadi kesalahan saat menghubungi Theresia AI.\n\n" + error.message);
+    }
+}
 
 /* =========================================================
    STATE
