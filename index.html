@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta name="theme-color" content="#f5f5f3">
+<meta name="mobile-web-app-capable" content="yes">
+
+<title>Theresia AI — Beta</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#f3f3f1;
+    --white:#ffffff;
+    --black:#0b0b0b;
+    --text:#111;
+    --muted:#858585;
+    --line:rgba(0,0,0,.10);
+    --line2:rgba(0,0,0,.17);
+    --glass:rgba(255,255,255,.72);
+    --shadow:0 15px 45px rgba(0,0,0,.08);
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+}
+
+body{
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.025) 1px,
+            transparent 1px
+        ),
+        var(--bg);
+
+    background-size:32px 32px;
+    color:var(--text);
+    overflow:hidden;
+}
+
+/* ==============================
+   DECORATION
+============================== */
+
+.circle{
+    position:fixed;
+    border:1px solid rgba(0,0,0,.07);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:-1;
+}
+
+.circle.one{
+    width:420px;
+    height:420px;
+    top:-260px;
+    right:-150px;
+}
+
+.circle.two{
+    width:300px;
+    height:300px;
+    bottom:-180px;
+    left:-150px;
+}
+
+/* ==============================
+   APP
+============================== */
+
+.app{
+    width:100%;
+    height:100dvh;
+    display:flex;
+}
+
+/* ==============================
+   SIDEBAR
+============================== */
+
+.sidebar{
+    width:280px;
+    height:100%;
+    flex-shrink:0;
+
+    padding:18px;
+
+    display:flex;
+    flex-direction:column;
+
+    background:rgba(255,255,255,.48);
+    border-right:1px solid var(--line);
+
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+
+    z-index:50;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    padding:2px 3px 17px;
+
+    border-bottom:1px solid var(--line);
+}
+
+.logo{
+    width:43px;
+    height:43px;
+
+    display:grid;
+    place-items:center;
+
+    background:var(--black);
+    color:white;
+
+    border-radius:13px;
+
+    font-weight:900;
+    font-size:17px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.13);
+}
+
+.brand-name{
+    font-weight:850;
+    font-size:15px;
+}
+
+.brand-beta{
+    display:block;
+    margin-top:2px;
+
+    color:var(--muted);
+
+    font-size:9px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+}
+
+.new-chat{
+    margin-top:16px;
+
+    height:46px;
+
+    border:1px solid var(--black);
+    border-radius:14px;
+
+    background:var(--black);
+    color:white;
+
+    font-weight:750;
+
+    transition:.2s;
+}
+
+.new-chat:hover{
+    transform:translateY(-2px);
+}
+
+.side-heading{
+    margin:20px 4px 8px;
+
+    color:var(--muted);
+
+    font-size:9px;
+    font-weight:800;
+
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+}
+
+.session-box{
+    padding:12px;
+
+    background:rgba(255,255,255,.65);
+
+    border:1px solid var(--line);
+    border-radius:14px;
+}
+
+.session-label{
+    color:var(--muted);
+    font-size:9px;
+    margin-bottom:7px;
+}
+
+.session-id{
+    font-family:monospace;
+    font-size:9px;
+
+    line-height:1.5;
+
+    word-break:break-all;
+
+    max-height:75px;
+    overflow:hidden;
+}
+
+.session-buttons{
+    display:flex;
+    gap:7px;
+    margin-top:10px;
+}
+
+.session-buttons button{
+    flex:1;
+
+    height:31px;
+
+    border:1px solid var(--line2);
+    border-radius:9px;
+
+    background:white;
+
+    font-size:10px;
+    font-weight:700;
+}
+
+/* History List */
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding-right: 4px;
+}
+
+.history-item {
+    padding: 10px;
+    background: rgba(255,255,255,0.55);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 10px;
+    font-family: monospace;
+    cursor: pointer;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: .2s;
+}
+
+.history-item:hover {
+    background: white;
+}
+
+.history-item.active {
+    background: var(--black);
+    color: white;
+    border-color: var(--black);
+}
+
+.side-footer{
+    padding-top:15px;
+
+    border-top:1px solid var(--line);
+
+    color:var(--muted);
+
+    font-size:9px;
+    line-height:1.6;
+}
+
+/* ==============================
+   MAIN
+============================== */
+
+.main{
+    min-width:0;
+    flex:1;
+    height:100%;
+
+    position:relative;
+
+    display:flex;
+    flex-direction:column;
+}
+
+/* ==============================
+   TOPBAR
+============================== */
+
+.topbar{
+    height:70px;
+    flex-shrink:0;
+
+    padding:10px 22px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+
+    background:rgba(255,255,255,.50);
+
+    border-bottom:1px solid var(--line);
+
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    z-index:20;
+}
+
+.mobile-menu{
+    display:none;
+
+    width:40px;
+    height:40px;
+
+    border:1px solid var(--line2);
+    border-radius:12px;
+
+    background:rgba(255,255,255,.7);
+}
+
+.top-info{
+    min-width:0;
+}
+
+.top-info h1{
+    font-size:15px;
+    font-weight:850;
+}
+
+.top-info p{
+    margin-top:2px;
+
+    color:var(--muted);
+
+    font-size:9px;
+}
+
+.models{
+    display:flex;
+    gap:3px;
+
+    padding:4px;
+
+    border:1px solid var(--line2);
+    border-radius:12px;
+
+    background:rgba(255,255,255,.72);
+}
+
+.model{
+    border:0;
+
+    padding:7px 10px;
+
+    border-radius:8px;
+
+    background:transparent;
+
+    color:var(--muted);
+
+    font-size:9px;
+    font-weight:800;
+}
+
+.model.active{
+    background:var(--black);
+    color:white;
+}
+
+/* ==============================
+   CHAT AREA
+============================== */
+
+.chat{
+    flex:1;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    padding:
+        30px
+        22px
+        150px;
+
+    scroll-behavior:smooth;
+
+    -webkit-overflow-scrolling:touch;
+}
+
+.chat-inner{
+    width:min(900px,100%);
+    margin:auto;
+}
+
+/* ==============================
+   WELCOME
+============================== */
+
+.welcome{
+    min-height:50vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    animation:fadeUp .4s ease;
+}
+
+.welcome-icon{
+    width:58px;
+    height:58px;
+
+    margin:auto auto 19px;
+
+    display:grid;
+    place-items:center;
+
+    border:1px solid var(--line2);
+    border-radius:18px;
+
+    background:rgba(255,255,255,.72);
+
+    box-shadow:var(--shadow);
+
+    font-size:18px;
+    font-weight:900;
+}
+
+.welcome h2{
+    font-size:clamp(42px,6vw,72px);
+
+    line-height:.92;
+
+    letter-spacing:-4px;
+
+    font-weight:950;
+}
+
+.welcome h2 span{
+    color:#858585;
+}
+
+.welcome p{
+    max-width:480px;
+
+    margin:17px auto 0;
+
+    color:var(--muted);
+
+    font-size:12px;
+    line-height:1.65;
+}
+
+.quick{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+
+    gap:7px;
+
+    margin-top:22px;
+}
+
+.quick button{
+    border:1px solid var(--line2);
+    border-radius:100px;
+
+    background:rgba(255,255,255,.65);
+
+    padding:8px 12px;
+
+    font-size:10px;
+    font-weight:700;
+
+    transition:.2s;
+}
+
+.quick button:hover{
+    background:var(--black);
+    color:white;
+}
+
+/* ==============================
+   MESSAGE
+============================== */
+
+.message{
+    width:100%;
+
+    display:flex;
+    align-items:flex-end;
+
+    gap:9px;
+
+    margin-bottom:21px;
+
+    animation:messageIn .22s ease;
+}
+
+.message.user{
+    justify-content:flex-end;
+}
+
+.message.ai{
+    justify-content:flex-start;
+}
+
+.avatar{
+    width:31px;
+    height:31px;
+
+    flex:0 0 31px;
+
+    display:grid;
+    place-items:center;
+
+    border:1px solid var(--line2);
+    border-radius:10px;
+
+    background:white;
+
+    font-size:9px;
+    font-weight:900;
+}
+
+.message.user .avatar{
+    order:2;
+
+    background:var(--black);
+    color:white;
+
+    border-color:var(--black);
+}
+
+.message-body{
+    display:flex;
+    flex-direction:column;
+
+    max-width:min(76%,700px);
+
+    min-width:0;
+}
+
+.message.user .message-body{
+    align-items:flex-end;
+}
+
+.message-role{
+    margin:0 3px 5px;
+
+    color:var(--muted);
+
+    font-size:8px;
+    font-weight:850;
+
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+}
+
+/*
+   BUBBLE FIT CONTENT
+*/
+
+.bubble{
+    width:fit-content;
+    max-width:100%;
+
+    padding:10px 13px;
+
+    border:1px solid var(--line);
+
+    background:rgba(255,255,255,.73);
+
+    border-radius:17px 17px 17px 5px;
+
+    box-shadow:0 6px 25px rgba(0,0,0,.035);
+
+    font-size:13px;
+    line-height:1.6;
+
+    overflow-wrap:break-word;
+    word-break: break-word;
+
+    white-space:pre-wrap;
+}
+
+.message.user .bubble{
+    background:var(--black);
+    color:white;
+
+    border-color:var(--black);
+
+    border-radius:17px 17px 5px 17px;
+
+    max-width:100%;
+}
+
+.message.user .message-body{
+    width:auto;
+}
+
+.message.ai .bubble{
+    max-width:min(100%,700px);
+}
+
+/* ==============================
+   CODE BLOCK STYLING
+============================== */
+
+.code-block {
+    background: #1e1e1e;
+    border-radius: 10px;
+    margin: 12px 0;
+    overflow: hidden;
+    font-size: 12px;
+    color: #d4d4d4;
+    text-align: left;
+    white-space: normal;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2d2d2d;
+    padding: 6px 12px;
+    font-size: 10px;
+    color: #9cdcfe;
+    font-weight: 700;
+    border-bottom: 1px solid #111;
+}
+
+.code-header span {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.copy-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 9px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.copy-btn:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.code-block pre {
+    padding: 12px;
+    overflow-x: auto;
+    margin: 0;
+    font-family: monospace;
+    white-space: pre;
+}
+
+/* Inline Code */
+code.inline-code {
+    padding:2px 5px;
+    border-radius:5px;
+    background:rgba(0,0,0,0.08);
+    font-family:monospace;
+    font-size:12px;
+    color: #d63384;
+}
+
+.message.user code.inline-code {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* ==============================
+   FILE PREVIEW
+============================== */
+
+.file-preview{
+    width:100%;
+
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    margin-bottom:8px;
+
+    padding:7px;
+
+    background:rgba(255,255,255,.55);
+
+    border:1px solid var(--line);
+
+    border-radius:11px;
+}
+
+.file-preview img{
+    width:42px;
+    height:42px;
+
+    flex-shrink:0;
+
+    object-fit:cover;
+
+    border-radius:8px;
+}
+
+.file-name{
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+    white-space:nowrap;
+
+    font-size:10px;
+    font-weight:750;
+}
+
+.file-type{
+    margin-top:2px;
+
+    color:var(--muted);
+
+    font-size:8px;
+}
+
+/* ==============================
+   IMAGE RESPONSE
+============================== */
+
+.result-image{
+    display:block;
+
+    width:auto;
+    max-width:100%;
+    max-height:500px;
+
+    border-radius:13px;
+
+    object-fit:contain;
+}
+
+/* ==============================
+   AUDIO
+============================== */
+
+audio{
+    width:100%;
+    max-width:450px;
+}
+
+/* ==============================
+   LOADING
+============================== */
+
+.loading{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding: 4px 2px;
+    min-height:18px;
+}
+
+.loading span{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#777;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loading span:nth-child(1){
+    animation-delay:-0.32s;
+}
+
+.loading span:nth-child(2){
+    animation-delay:-0.16s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% { 
+        transform: scale(0);
+    } 
+    40% { 
+        transform: scale(1);
+    }
+}
+
+/* ==============================
+   COMPOSER
+============================== */
+
+.composer-area{
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    padding:
+        10px
+        22px
+        16px;
+
+    pointer-events:none;
+
+    z-index:30;
+}
+
+.composer-wrap{
+    width:min(900px,100%);
+    margin:auto;
+
+    pointer-events:auto;
+}
+
+.attachment{
+    display:none;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:8px 11px;
+
+    margin-bottom:7px;
+
+    border:1px solid var(--line2);
+    border-radius:12px;
+
+    background:rgba(255,255,255,.83);
+
+    backdrop-filter:blur(20px);
+}
+
+.attachment.show{
+    display:flex;
+}
+
+.attachment-name{
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+    white-space:nowrap;
+
+    font-size:10px;
+    font-weight:700;
+}
+
+.remove-file{
+    width:25px;
+    height:25px;
+
+    border:0;
+    border-radius:8px;
+
+    background:transparent;
+
+    font-size:17px;
+}
+
+.composer{
+    padding:8px;
+
+    border:1px solid var(--line2);
+    border-radius:20px;
+
+    background:rgba(255,255,255,.82);
+
+    box-shadow:
+        0 16px 50px rgba(0,0,0,.10);
+
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+}
+
+.input-row{
+    display:flex;
+    align-items:flex-end;
+    gap:7px;
+}
+
+textarea{
+    width:100%;
+
+    min-height:40px;
+    max-height:130px;
+
+    padding:
+        9px 6px;
+
+    resize:none;
+
+    outline:none;
+    border:0;
+
+    background:transparent;
+
+    color:var(--text);
+
+    font-size:13px;
+    line-height:1.5;
+}
+
+textarea::placeholder{
+    color:#999;
+}
+
+.tool{
+    width:40px;
+    height:40px;
+
+    flex:0 0 40px;
+
+    display:grid;
+    place-items:center;
+
+    border:1px solid var(--line);
+
+    border-radius:12px;
+
+    background:white;
+
+    font-size:17px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.tool:hover{
+    transform:translateY(-1px);
+}
+
+.send{
+    background:var(--black);
+    color:white;
+
+    border-color:var(--black);
+}
+
+#fileInput{
+    display:none;
+}
+
+.composer-info{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:4px 4px 0;
+
+    color:#999;
+
+    font-size:8px;
+    letter-spacing:.5px;
+}
+
+/* ==============================
+   TOAST
+============================== */
+
+.toast{
+    position:fixed;
+
+    left:50%;
+    bottom:95px;
+
+    transform:
+        translate(-50%,20px);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    z-index:100;
+
+    padding:9px 13px;
+
+    border-radius:10px;
+
+    background:var(--black);
+    color:white;
+
+    font-size:10px;
+
+    transition:.25s;
+}
+
+.toast.show{
+    opacity:1;
+
+    transform:
+        translate(-50%,0);
+}
+
+/* ==============================
+   ANIMATION
+============================== */
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes messageIn{
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media(max-width:800px){
+
+    .sidebar{
+        position:fixed;
+
+        left:0;
+        top:0;
+
+        transform:translateX(-105%);
+
+        transition:.25s;
+
+        box-shadow:
+            20px 0 50px rgba(0,0,0,.13);
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .mobile-menu{
+        display:block;
+    }
+
+    .topbar{
+        height:63px;
+
+        padding:
+            8px 10px;
+    }
+
+    .top-info{
+        flex:1;
+    }
+
+    .top-info h1{
+        font-size:13px;
+    }
+
+    .top-info p{
+        font-size:8px;
+    }
+
+    .models{
+        max-width:145px;
+    }
+
+    .model{
+        padding:6px 7px;
+        font-size:8px;
+    }
+
+    .chat{
+        padding:
+            22px
+            11px
+            145px;
+    }
+
+    .welcome{
+        min-height:48vh;
+    }
+
+    .welcome h2{
+        font-size:45px;
+        letter-spacing:-3px;
+    }
+
+    .welcome p{
+        font-size:11px;
+    }
+
+    /*
+      Android Adjustments
+    */
+    .message-body{
+        max-width:90%;
+    }
+
+    .bubble{
+        font-size:12px;
+        padding:10px 14px;
+        word-break: break-word;
+    }
+
+    .message{
+        gap:7px;
+        margin-bottom:18px;
+    }
+
+    .avatar{
+        width:29px;
+        height:29px;
+        flex-basis:29px;
+    }
+
+    .composer-area{
+        padding:
+            8px
+            9px
+            11px;
+    }
+
+    .composer{
+        border-radius:18px;
+    }
+
+    .tool{
+        width:39px;
+        height:39px;
+        flex-basis:39px;
+    }
+
+    .composer-info{
+        display:none;
+    }
+}
+
+@media(max-width:400px){
+
+    .model{
+        padding:6px 5px;
+        font-size:7px;
+    }
+
+    .message-body{
+        max-width:92%;
+    }
+
+    .welcome h2{
+        font-size:40px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="circle one"></div>
+<div class="circle two"></div>
+
+<div class="app">
+
+<!-- ==============================
+     SIDEBAR
+============================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+
+        <div class="logo">
+            T
+        </div>
+
+        <div>
+            <div class="brand-name">
+                Theresia AI
+            </div>
+
+            <span class="brand-beta">
+                Beta System
+            </span>
+        </div>
+
+    </div>
+
+    <button
+        class="new-chat"
+        onclick="createNewConversation()">
+
+        + New Session
+
+    </button>
+
+    <div class="side-heading">
+        Current Session
+    </div>
+
+    <div class="session-box">
+
+        <div class="session-label">
+            SESSION ID
+        </div>
+
+        <div
+            class="session-id"
+            id="sessionDisplay">
+        </div>
+
+        <div class="session-buttons">
+
+            <button onclick="copySession()">
+                Copy
+            </button>
+
+            <button onclick="createNewConversation()">
+                New
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="side-heading">
+        History
+    </div>
+
+    <div class="history-list" id="historyList">
+        <!-- History Items -->
+    </div>
+
+    <div class="side-footer">
+
+        <b>K-FRAME INTERFACE</b>
+        <br>
+
+        Simple structure, subtle depth,
+        strong identity.
+
+        <br><br>
+
+        Theresia AI © 2026
+
+    </div>
+
+</aside>
+
+
+<!-- ==============================
+     MAIN
+============================== -->
+
+<main class="main">
+
+<header class="topbar">
+
+    <button
+        class="mobile-menu"
+        onclick="toggleSidebar()">
+
+        ☰
+
+    </button>
+
+    <div class="top-info">
+
+        <h1 id="modeTitle">
+            Theresia AI
+        </h1>
+
+        <p id="modeDescription">
+            Fast conversational intelligence
+        </p>
+
+    </div>
+
+
+    <div class="models">
+
+        <button
+            class="model active"
+            data-mode="fast"
+            onclick="setMode('fast')">
+
+            Fast
+
+        </button>
+
+        <button
+            class="model"
+            data-mode="image"
+            onclick="setMode('image')">
+
+            Image
+
+        </button>
+
+        <button
+            class="model"
+            data-mode="music"
+            onclick="setMode('music')">
+
+            Music
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ==============================
+     CHAT
+============================== -->
+
+<section
+    class="chat"
+    id="chat">
+
+    <div
+        class="chat-inner"
+        id="chatInner">
+
+        <div
+            class="welcome"
+            id="welcome">
+
+            <div>
+
+                <div class="welcome-icon">
+                    T
+                </div>
+
+                <h2>
+                    Theresia
+                    <br>
+                    <span>AI.</span>
+                </h2>
+
+                <p>
+                    Your minimal AI workspace.
+                    Chat, edit images, and explore
+                    creative possibilities with
+                    Theresia AI.
+                </p>
+
+                <div class="quick">
+
+                    <button onclick="
+                        quickPrompt(
+                        'Halo Theresia, perkenalkan dirimu.'
+                        )">
+
+                        Introduce yourself
+
+                    </button>
+
+                    <button onclick="
+                        quickPrompt(
+                        'Apa saja yang bisa kamu bantu?'
+                        )">
+
+                        What can you do?
+
+                    </button>
+
+                    <button onclick="
+                        quickPrompt(
+                        'Bantu saya membuat sebuah project.'
+                        )">
+
+                        Project ideas
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==============================
+     COMPOSER
+============================== -->
+
+<div class="composer-area">
+
+    <div class="composer-wrap">
+
+        <div
+            class="attachment"
+            id="attachment">
+
+            <div
+                class="attachment-name"
+                id="attachmentName">
+
+            </div>
+
+            <button
+                class="remove-file"
+                onclick="removeFile()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="composer">
+
+            <div class="input-row">
+
+                <label
+                    class="tool"
+                    title="Upload file">
+
+                    +
+
+                    <input
+                        type="file"
+                        id="fileInput"
+                        onchange="handleFile(event)"
+                    >
+
+                </label>
+
+
+                <textarea
+                    id="prompt"
+                    rows="1"
+                    placeholder="Message Theresia..."
+                    oninput="autoResize(this)"
+                    onkeydown="handleKey(event)"
+                ></textarea>
+
+
+                <button
+                    class="tool send"
+                    id="sendButton"
+                    onclick="sendMessage()">
+
+                    ↑
+
+                </button>
+
+            </div>
+
+
+            <div class="composer-info">
+
+                <span id="modeLabel">
+                    MODE / FAST
+                </span>
+
+                <span>
+                    THERESIA AI · BETA
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+</div>
+
+<div
+    class="toast"
+    id="toast">
+</div>
+
+
+<script>
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const CONFIG = {
+
+    API_KEY:
+        "fcs_test_1bb454fbec6a797573084053b17af8f7fc8bba54",
+
+    FAST_API:
+        "[https://api.fazzcode.eu.cc/api/gemini](https://api.fazzcode.eu.cc/api/gemini)",
+
+    IMAGE_API:
+        "[https://api.fazzcode.eu.cc/api/qwenimagedit](https://api.fazzcode.eu.cc/api/qwenimagedit)",
+
+    MUSIC_API:
+        "[https://api.fazzcode.eu.cc/api/remusic](https://api.fazzcode.eu.cc/api/remusic)"
+
+};
+
+
+/* =========================================================
+   THERESIA IDENTITY
+========================================================= */
+
+const THERESIA_INSTRUCTION = `
+Kamu adalah Theresia AI.
+
+Theresia AI adalah asisten AI yang diciptakan
+oleh Tim KyuuZa.
+
+Identitas:
+- Nama: Theresia AI
+- Creator: Tim KyuuZa
+- Status: Beta
+- Gaya: ramah, cerdas, membantu, natural
+- Bahasa: ikuti bahasa yang digunakan user
+
+Jika user bertanya siapa kamu, jawab bahwa kamu
+adalah Theresia AI yang diciptakan oleh Tim KyuuZa.
+
+Jangan mengaku sebagai Gemini atau AI lain.
+Kamu adalah Theresia AI.
+
+Bantu user dengan jawaban yang jelas,
+natural, dan mudah dipahami.
+`.trim();
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentMode = "fast";
+let selectedFile = null;
+let isGenerating = false;
+
+let sessionId = localStorage.getItem("theresia_current_session");
+
+if(!sessionId){
+    sessionId = generateTemporarySession();
+    localStorage.setItem("theresia_current_session", sessionId);
+}
+
+
+/* =========================================================
+   SESSION STORAGE
+========================================================= */
+
+function generateTemporarySession(){
+    return (
+        "theresia_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random().toString(36).slice(2,9)
+    );
+}
+
+function getSessions(){
+    try{
+        return JSON.parse(localStorage.getItem("theresia_sessions") || "{}");
+    }catch{
+        return {};
+    }
+}
+
+function saveSessions(sessions){
+    localStorage.setItem("theresia_sessions", JSON.stringify(sessions));
+    updateHistoryUI();
+}
+
+function saveMessage(role, content){
+    const sessions = getSessions();
+    if(!sessions[sessionId]){
+        sessions[sessionId] = {
+            id: sessionId,
+            createdAt: Date.now(),
+            messages: []
+        };
+    }
+    sessions[sessionId].messages.push({
+        role,
+        content,
+        time: Date.now()
+    });
+    sessions[sessionId].updatedAt = Date.now();
+    saveSessions(sessions);
+}
+
+
+/* =========================================================
+   SESSION UI & HISTORY
+========================================================= */
+
+function updateSessionUI(){
+    document.getElementById("sessionDisplay").textContent = sessionId;
+}
+
+function updateHistoryUI() {
+    const listContainer = document.getElementById("historyList");
+    if(!listContainer) return;
+    
+    const sessions = getSessions();
+    listContainer.innerHTML = "";
+    
+    // Urutkan berdasarkan yang paling baru diupdate
+    const sortedSessions = Object.values(sessions).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    
+    sortedSessions.forEach(sess => {
+        const btn = document.createElement("div");
+        btn.className = "history-item";
+        if(sess.id === sessionId) {
+            btn.classList.add("active");
+        }
+        btn.textContent = sess.id;
+        btn.title = sess.id;
+        btn.onclick = () => loadSession(sess.id);
+        listContainer.appendChild(btn);
+    });
+}
+
+function loadSession(id) {
+    if(isGenerating) return;
+    const sessions = getSessions();
+    if(!sessions[id]) return;
+    
+    sessionId = id;
+    localStorage.setItem("theresia_current_session", sessionId);
+    
+    updateSessionUI();
+    updateHistoryUI();
+    
+    const chatInner = document.getElementById("chatInner");
+    chatInner.innerHTML = ""; 
+    
+    const msgs = sessions[id].messages || [];
+    if(msgs.length === 0) {
+        clearChat();
+    } else {
+        msgs.forEach(m => {
+            if(m.role === "user") {
+                addUserMessageRaw(m.content);
+            } else {
+                addAIMessage(m.content);
+            }
+        });
+    }
+    
+    if(window.innerWidth <= 800) closeSidebar();
+}
+
+updateSessionUI();
+updateHistoryUI();
+
+
+/* =========================================================
+   NEW SESSION
+========================================================= */
+
+function createNewConversation(){
+    sessionId = generateTemporarySession();
+    localStorage.setItem("theresia_current_session", sessionId);
+
+    const sessions = getSessions();
+    sessions[sessionId] = {
+        id: sessionId,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messages: []
+    };
+    saveSessions(sessions);
+
+    updateSessionUI();
+    updateHistoryUI();
+    clearChat();
+
+    showToast("New session created");
+    closeSidebar();
+}
+
+
+/* =========================================================
+   CLEAR CHAT
+========================================================= */
+
+function clearChat(){
+    document.getElementById("chatInner").innerHTML = `
+        <div class="welcome" id="welcome">
+            <div>
+                <div class="welcome-icon">T</div>
+                <h2>Theresia<br><span>AI.</span></h2>
+                <p>Session baru siap digunakan.</p>
+            </div>
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   COPY SESSION
+========================================================= */
+
+async function copySession(){
+    try{
+        await navigator.clipboard.writeText(sessionId);
+        showToast("Session ID copied");
+    }catch{
+        showToast("Copy failed");
+    }
+}
+
+// Fitur Copy Khusus Code Block
+window.copyCode = function(elementId) {
+    const el = document.getElementById(elementId);
+    if(el) {
+        const text = el.innerText || el.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            showToast("Kode berhasil disalin!");
+        }).catch(() => {
+            showToast("Gagal menyalin kode");
+        });
+    }
+}
+
+
+/* =========================================================
+   MODE
+========================================================= */
+
+function setMode(mode){
+    currentMode = mode;
+
+    document.querySelectorAll(".model").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
+
+    const title = document.getElementById("modeTitle");
+    const description = document.getElementById("modeDescription");
+    const label = document.getElementById("modeLabel");
+    const input = document.getElementById("prompt");
+
+    if(mode === "fast"){
+        title.textContent = "Theresia AI";
+        description.textContent = "Fast conversational intelligence";
+        label.textContent = "MODE / FAST";
+        input.placeholder = "Message Theresia...";
+        document.getElementById("fileInput").accept = "*/*";
+    }
+
+    if(mode === "image"){
+        title.textContent = "Theresia / Image Edit";
+        description.textContent = "AI image editing";
+        label.textContent = "MODE / IMAGE EDIT";
+        input.placeholder = "Optional instruction...";
+        document.getElementById("fileInput").accept = "image/*";
+    }
+
+    if(mode === "music"){
+        title.textContent = "Theresia / Music";
+        description.textContent = "Creative music generator";
+        label.textContent = "MODE / MUSIC";
+        input.placeholder = "Describe your music...";
+        document.getElementById("fileInput").accept = "image/*";
+    }
+}
+
+
+/* =========================================================
+   FILE
+========================================================= */
+
+function handleFile(event){
+    const file = event.target.files[0];
+    if(!file) return;
+
+    selectedFile = file;
+    document.getElementById("attachment").classList.add("show");
+    document.getElementById("attachmentName").textContent = file.name;
+}
+
+function removeFile(){
+    selectedFile = null;
+    document.getElementById("fileInput").value = "";
+    document.getElementById("attachment").classList.remove("show");
+}
+
+
+/* =========================================================
+   SEND
+========================================================= */
+
+async function sendMessage(){
+    if(isGenerating) return;
+
+    const input = document.getElementById("prompt");
+    const prompt = input.value.trim();
+
+    if(currentMode === "fast" && !prompt){
+        showToast("Tulis pesan terlebih dahulu");
+        return;
+    }
+
+    if(currentMode !== "fast" && !selectedFile){
+        showToast("Upload image terlebih dahulu");
+        return;
+    }
+
+    isGenerating = true;
+    hideWelcome();
+
+    if(currentMode === "fast"){
+        addUserMessage(prompt);
+        saveMessage("user", prompt);
+        input.value = "";
+        autoResize(input);
+        await runFast(prompt);
+    }
+
+    if(currentMode === "image"){
+        addUserMessage(prompt || "Edit image ini.", selectedFile);
+        await runImageEdit(prompt);
+        input.value = "";
+    }
+
+    if(currentMode === "music"){
+        addUserMessage(prompt || "Generate music.", selectedFile);
+        await runMusic(prompt);
+        input.value = "";
+    }
+
+    isGenerating = false;
+}
+
+
+/* =========================================================
+   FAST GEMINI
+========================================================= */
+
+async function runFast(prompt){
+    const loading = addLoading();
+
+    try{
+        const params = new URLSearchParams();
+        params.set("prompt", prompt);
+        params.set("instruction", THERESIA_INSTRUCTION);
+        params.set("session", sessionId);
+        params.set("api_key", CONFIG.API_KEY);
+
+        const response = await fetch(CONFIG.FAST_API + "?" + params.toString());
+        if(!response.ok) throw new Error("HTTP " + response.status);
+
+        const data = await response.json();
+        loading.remove();
+
+        const result = data?.result;
+        if(!result) throw new Error("Response API tidak memiliki result.");
+
+        if(result.session_id && typeof result.session_id === "string"){
+            sessionId = result.session_id;
+            localStorage.setItem("theresia_current_session", sessionId);
+            updateSessionUI();
+            migrateTemporarySession();
+            updateHistoryUI(); // Refresh list to catch new ID if needed
+        }
+
+        const answer = result.response;
+        if(typeof answer !== "string" || !answer.trim()){
+            throw new Error("result.response tidak ditemukan.");
+        }
+
+        addAIMessage(answer);
+        saveMessage("assistant", answer);
+
+    }catch(error){
+        loading.remove();
+        addAIMessage("Maaf, terjadi kesalahan saat menghubungi Theresia AI.\n\n" + error.message);
+    }
+}
+
+
+/* =========================================================
+   MIGRATE TEMP SESSION
+========================================================= */
+
+function migrateTemporarySession(){
+    const sessions = getSessions();
+    if(!sessions[sessionId]){
+        sessions[sessionId] = {
+            id: sessionId,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            messages: []
+        };
+        saveSessions(sessions);
+    }
+}
+
+
+/* =========================================================
+   IMAGE EDIT
+========================================================= */
+
+async function runImageEdit(prompt){
+    const loading = addLoading();
+
+    try{
+        const form = new FormData();
+        form.append("image", selectedFile);
+        
+        const response = await fetch(CONFIG.IMAGE_API, {
+            method: "POST",
+            headers: { Authorization: "Bearer " + CONFIG.API_KEY },
+            body: form
+        });
+
+        if(!response.ok) throw new Error("HTTP " + response.status);
+        const type = response.headers.get("content-type") || "";
+        loading.remove();
+
+        if(type.startsWith("image/")){
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            addAIImage(url);
+        }else{
+            const text = await response.text();
+            addAIMessage(parseGenericResponse(text));
+        }
+
+        removeFile();
+
+    }catch(error){
+        loading.remove();
+        addAIMessage("Image edit gagal.\n\n" + error.message);
+    }
+}
+
+
+/* =========================================================
+   MUSIC
+========================================================= */
+
+async function runMusic(prompt){
+    const loading = addLoading();
+
+    try{
+        const form = new FormData();
+        form.append("none", selectedFile);
+
+        const response = await fetch(CONFIG.MUSIC_API, {
+            method: "POST",
+            headers: { Authorization: "Bearer " + CONFIG.API_KEY },
+            body: form
+        });
+
+        if(!response.ok) throw new Error("HTTP " + response.status);
+        const type = response.headers.get("content-type") || "";
+        loading.remove();
+
+        if(type.startsWith("audio/")){
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            addAudioMessage(url);
+        }else{
+            const text = await response.text();
+            addAIMessage(parseGenericResponse(text));
+        }
+
+        removeFile();
+
+    }catch(error){
+        loading.remove();
+        addAIMessage("Music generation gagal.\n\n" + error.message);
+    }
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function addUserMessageRaw(text) {
+    const inner = document.getElementById("chatInner");
+    const message = document.createElement("div");
+    message.className = "message user";
+
+    message.innerHTML = `
+        <div class="avatar">U</div>
+        <div class="message-body">
+            <div class="message-role">You</div>
+            <div class="bubble">${escapeHTML(text)}</div>
+        </div>
+    `;
+
+    inner.appendChild(message);
+    scrollBottom();
+}
+
+
+function addUserMessage(text, file = null){
+    const inner = document.getElementById("chatInner");
+    const message = document.createElement("div");
+    message.className = "message user";
+
+    let fileHTML = "";
+    if(file){
+        const url = URL.createObjectURL(file);
+        fileHTML = `
+            <div class="file-preview">
+                ${file.type.startsWith("image/") 
+                    ? `<img src="${url}" alt="">`
+                    : `<div style="width:42px;height:42px;border-radius:8px;background:#111;color:white;display:grid;place-items:center;font-size:8px;font-weight:800;">FILE</div>`
+                }
+                <div style="min-width:0">
+                    <div class="file-name">${escapeHTML(file.name)}</div>
+                    <div class="file-type">${escapeHTML(file.type || "file")}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    message.innerHTML = `
+        <div class="avatar">U</div>
+        <div class="message-body">
+            <div class="message-role">You</div>
+            <div class="bubble">${fileHTML}${text ? escapeHTML(text) : ""}</div>
+        </div>
+    `;
+
+    inner.appendChild(message);
+    scrollBottom();
+}
+
+
+function addAIMessage(text){
+    const inner = document.getElementById("chatInner");
+    const message = document.createElement("div");
+    message.className = "message ai";
+
+    message.innerHTML = `
+        <div class="avatar">T</div>
+        <div class="message-body">
+            <div class="message-role">Theresia</div>
+            <div class="bubble">${formatText(text)}</div>
+        </div>
+    `;
+
+    inner.appendChild(message);
+    scrollBottom();
+}
+
+
+function addAIImage(url){
+    const inner = document.getElementById("chatInner");
+    const message = document.createElement("div");
+    message.className = "message ai";
+
+    message.innerHTML = `
+        <div class="avatar">T</div>
+        <div class="message-body">
+            <div class="message-role">Theresia</div>
+            <div class="bubble"><img class="result-image" src="${url}" alt="Theresia result"></div>
+        </div>
+    `;
+
+    inner.appendChild(message);
+    scrollBottom();
+}
+
+
+function addAudioMessage(url){
+    const inner = document.getElementById("chatInner");
+    const message = document.createElement("div");
+    message.className = "message ai";
+
+    message.innerHTML = `
+        <div class="avatar">T</div>
+        <div class="message-body">
+            <div class="message-role">Theresia</div>
+            <div class="bubble">
+                <div style="font-size:11px;font-weight:800;margin-bottom:8px;">Generated Audio</div>
+                <audio controls src="${url}"></audio>
+            </div>
+        </div>
+    `;
+
+    inner.appendChild(message);
+    scrollBottom();
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function addLoading(){
+    const inner = document.getElementById("chatInner");
+    const message = document.createElement("div");
+    message.className = "message ai";
+
+    message.innerHTML = `
+        <div class="avatar">T</div>
+        <div class="message-body">
+            <div class="message-role">Theresia</div>
+            <div class="bubble">
+                <div class="loading">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    inner.appendChild(message);
+    scrollBottom();
+    return message;
+}
+
+
+/* =========================================================
+   RESPONSE FORMAT
+========================================================= */
+
+function parseGenericResponse(value){
+    if(typeof value !== "string") return JSON.stringify(value, null, 2);
+    try{
+        const json = JSON.parse(value);
+        if(json?.result?.response) return json.result.response;
+        if(json?.response) return json.response;
+        return JSON.stringify(json, null, 2);
+    }catch{
+        return value;
+    }
+}
+
+
+/* =========================================================
+   FORMAT TEXT (MARKDOWN TO HTML)
+========================================================= */
+
+function formatText(text){
+    let safe = escapeHTML(String(text ?? ""));
+
+    // Multiline Code Blocks
+    safe = safe.replace(/```(\w*)\n([\s\S]*?)```/g, function(match, lang, code) {
+        const uniqueId = 'code-' + Math.random().toString(36).substr(2, 9);
+        return `
+        <div class="code-block">
+            <div class="code-header">
+                <span>${lang || 'Code'}</span>
+                <button class="copy-btn" onclick="copyCode('${uniqueId}')">Copy Code</button>
+            </div>
+            <pre><code id="${uniqueId}">${code}</code></pre>
+        </div>`;
+    });
+
+    // Bold text
+    safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+    // Inline code
+    safe = safe.replace(/`([^`]+)`/g, `<code class="inline-code">$1</code>`);
+
+    return safe;
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   QUICK
+========================================================= */
+
+function quickPrompt(text){
+    setMode("fast");
+    const input = document.getElementById("prompt");
+    input.value = text;
+    autoResize(input);
+    sendMessage();
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function hideWelcome(){
+    const welcome = document.getElementById("welcome");
+    if(welcome) welcome.remove();
+}
+
+function scrollBottom(){
+    const chat = document.getElementById("chat");
+    requestAnimationFrame(() => {
+        chat.scrollTop = chat.scrollHeight;
+    });
+}
+
+function autoResize(element){
+    element.style.height = "auto";
+    element.style.height = Math.min(element.scrollHeight, 130) + "px";
+}
+
+function handleKey(event){
+    if(event.key === "Enter" && !event.shiftKey){
+        event.preventDefault();
+        sendMessage();
+    }
+}
+
+function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("open");
+}
+
+function closeSidebar(){
+    document.getElementById("sidebar").classList.remove("open");
+}
+
+function showToast(text){
+    const toast = document.getElementById("toast");
+    toast.textContent = text;
+    toast.classList.add("show");
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2000);
+}
+
+
+/* =========================================================
+   CLOSE MOBILE SIDEBAR
+========================================================= */
+
+document.addEventListener("click", event => {
+    if(
+        window.innerWidth <= 800 &&
+        !event.target.closest(".sidebar") &&
+        !event.target.closest(".mobile-menu")
+    ){
+        closeSidebar();
+    }
+});
+
+</script>
+
+</body>
+</html>
